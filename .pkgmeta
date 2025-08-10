@@ -1,0 +1,6 @@
+externals:
+    libs/AceAddon-3.0: https://repos.wowace.com/wow/ace3/trunk/AceAddon-3.0
+    libs/AceDB-3.0: https://repos.wowace.com/wow/ace3/trunk/AceDB-3.0
+    libs/CallbackHandler-1.0: https://repos.wowace.com/wow/ace3/trunk/CallbackHandler-1.0
+    libs/HereBeDragons: https://repos.wowace.com/wow/herebedragons
+    libs/LibStub: https://repos.wowace.com/wow/ace3/trunk/LibStub
