@@ -107,16 +107,26 @@ function PDC:OnInitialize()
     HandyNotes:RegisterPluginDB(addonName, self, options);
 end
 
+local superTrackedTaxiNodeID;
 local function iter(t, previousIndex)
     if not t then return nil; end
     local index, value = next(t, previousIndex);
     while index and value do
-        return index, nil, iconDefault, PDC.db.iconScale * 1.2, PDC.db.iconAlpha * 2;
+        --- @type PhaseDivingConduit_Node
+        local node = value;
+        local scaleModifier = superTrackedTaxiNodeID == node.taxiNodeID and 1.6 or 1.2;
+
+        return index, nil, iconDefault, PDC.db.iconScale * scaleModifier, PDC.db.iconAlpha * 2;
     end
 end
 function PDC:GetNodes2(uiMapId, isMinimapUpdate)
     if not self.nodes[uiMapId] or isMinimapUpdate then return function() end end
 
+    superTrackedTaxiNodeID = nil;
+    local type, id = C_SuperTrack.GetSuperTrackedMapPin();
+    if type == Enum.SuperTrackingMapPinType.TaxiNode then
+        superTrackedTaxiNodeID = id;
+    end
     return iter, self.nodes[uiMapId], nil
 end
 
@@ -132,6 +142,14 @@ function PDC.OnClick(mapPin, button, down, mapFile, coord)
             minimap = true,
             world = true,
         });
+    elseif node.taxiNodeID then
+        local type, id = C_SuperTrack.GetSuperTrackedMapPin();
+        if type == Enum.SuperTrackingMapPinType.TaxiNode and id == node.taxiNodeID then
+            C_SuperTrack.ClearSuperTrackedMapPin();
+        else
+            C_SuperTrack.SetSuperTrackedMapPin(Enum.SuperTrackingMapPinType.TaxiNode, node.taxiNodeID);
+        end
+        PDC:Refresh();
     end
 end
 
@@ -149,6 +167,7 @@ function PDC.OnEnter(mapPin, mapFile, coord)
     GameTooltip:SetText('Phase Conduit');
     GameTooltip:AddLine(text);
 
+    GameTooltip_AddInstructionLine(GameTooltip, 'Click to toggle SuperTrack');
     if PDC.isTomTomLoaded then
         GameTooltip_AddInstructionLine(GameTooltip, 'Alt-click to set TomTom waypoint');
     end
