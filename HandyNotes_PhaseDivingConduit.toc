@@ -1,4 +1,4 @@
-## Interface: @toc-version-retail@
+## Interface: @toc-version-retail@,@toc-version-midnight@
 ## Title: Handynotes - Phase Diving Conduit
 ## Notes: Shows Phase Diving Conduits on the map.
 ## IconAtlas: flightmaster_ancientwaygate-taxinode_neutral
